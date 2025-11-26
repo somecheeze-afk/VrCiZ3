@@ -1,16 +1,18 @@
 {
   "quizzes": [
     {
-      "id": "chicken",
-      "title": "手仕込チキンカツカレークイズ",
-      "updated": "2025-09-16",
-      "category": "キッチン/調理"
-    },
-    {
       "id": "rice",
       "title": "ココイチ ライス量 ↔ ソース量・お玉 クイズ",
       "updated": "2025-09-16",
-      "category": "オペレーション/配膳"
+      "category": "オペレーション/配膳",
+      "pdf": "PDF/定量・辛味・加熱時間.pdf"
+    },
+    {
+      "id": "fukubukuro",
+      "title": "2026年 福袋クイズ",
+      "updated": "2025-11-26",
+      "category": "販促・季節イベント",
+      "pdf": "PDF/２０２６年　福袋販促マニュアル.pdf"
     }
   ]
 }
