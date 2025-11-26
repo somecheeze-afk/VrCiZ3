@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ココイチクイズ</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="splash" aria-hidden="true">
+    <div class="center">
+      <div class="emoji" aria-hidden="true">🍛</div>
+      <h1 class="grad">ココイチクイズ</h1>
+      <p class="muted">楽しみながら覚えよう！</p>
+    </div>
+  </div>
+
+  <div class="wrap" id="main" style="opacity:0">
+    <section class="card">
+      <div class="header-row">
+        <h1>クイズを選択</h1>
+        <div id="segments" class="segments" role="tablist" aria-label="ジャンル"></div>
+      </div>
+      <div id="quizList" class="choices"></div>
+    </section>
+  </div>
+
+  <script src="app.js?v=7" defer></script>
+</body>
+</html>
