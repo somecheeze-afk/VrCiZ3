@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz</title>
+  <style>
+    body{font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif; margin: 24px; line-height: 1.6;}
+    .card{border:1px solid #ddd; border-radius:12px; padding:16px; margin:14px 0;}
+    .q{font-weight:700; margin-bottom:10px;}
+    .choices{display:grid; gap:10px;}
+    button.choice{padding:10px 12px; border-radius:10px; border:1px solid #ccc; background:#fff; text-align:left; cursor:pointer;}
+    button.choice:hover{background:#f6f6f6;}
+    .result{margin-top:10px; font-weight:700;}
+    .ok{color:#0a7;}
+    .ng{color:#c33;}
+    .top{display:flex; gap:12px; align-items:baseline; flex-wrap:wrap;}
+    .score{font-weight:800;}
+    .muted{color:#666; font-size: 0.95em;}
+    .footer{margin-top:24px; color:#666; font-size:0.9em;}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <h1 id="title">クイズ</h1>
+    <div class="score">Score: <span id="score">0</span>/<span id="total">0</span></div>
+  </div>
+  <div class="muted">※ GitHub Pagesでそのまま動く、JSON読み込み型の簡易クイズです。</div>
+
+  <div id="app"></div>
+
+  <div class="footer">
+    JSONファイル名を変えた場合は、下の <code>DATA_URL</code> を合わせてください。
+  </div>
+
+<script>
+  // ★同階層に置くJSON名に合わせる
+  const DATA_URL = "./passport_quiz.json";
+
+  let score = 0;
+  let total = 0;
+
+  function el(tag, attrs={}, ...children){
+    const node = document.createElement(tag);
+    for(const [k,v] of Object.entries(attrs)){
+      if(k === "class") node.className = v;
+      else if(k.startsWith("on") && typeof v === "function") node.addEventListener(k.slice(2), v);
+      else node.setAttribute(k, v);
+    }
+    for(const c of children){
+      if(c == null) continue;
+      node.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    }
+    return node;
+  }
+
+  function updateScore(){
+    document.getElementById("score").textContent = String(score);
+    document.getElementById("total").textContent = String(total);
+  }
+
+  function renderQuiz(data){
+    document.getElementById("title").textContent = data.title || "クイズ";
+    const app = document.getElementById("app");
+    app.innerHTML = "";
+    total = (data.questions || []).length;
+    score = 0;
+    updateScore();
+
+    data.questions.forEach((item, idx) => {
+      const answered = { done: false };
+      const result = el("div", {class:"result"});
+
+      const card = el("div", {class:"card"},
+        el("div", {class:"q"}, `Q${idx+1}. ${item.q}`),
+        el("div", {class:"choices"},
+          ...item.choices.map((text, i) => el("button", {
+              class: "choice",
+              type: "button",
+              onclick: () => {
+                if(answered.done) return;
+                answered.done = true;
+
+                const correct = (i === item.answer);
+                if(correct){ score++; result.classList.add("ok"); result.textContent = "⭕ 正解！"; }
+                else{ result.classList.add("ng"); result.textContent = `❌ 不正解（正解：${item.choices[item.answer]}）`; }
+
+                updateScore();
+              }
+            }, ["A","B","C","D"][i] + ". " + text)
+          )
+        ),
+        result
+      );
+      app.appendChild(card);
+    });
+  }
+
+  fetch(DATA_URL)
+    .then(r => {
+      if(!r.ok) throw new Error("JSON読み込みに失敗しました: " + r.status);
+      return r.json();
+    })
+    .then(renderQuiz)
+    .catch(err => {
+      document.getElementById("app").appendChild(
+        el("div", {class:"card"},
+          el("div", {class:"q"}, "読み込みエラー"),
+          el("div", {}, String(err))
+        )
+      );
+    });
+</script>
+</body>
+</html>
